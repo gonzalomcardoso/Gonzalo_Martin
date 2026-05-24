@@ -91,7 +91,7 @@ java -version
 No necesitas instalar Maven en tu sistema.
 El proyecto ya incluye el Maven Wrapper, que son estos archivos:
 
-Código
+Código:
 mvnw
 mvnw.cmd
 .mvn/
@@ -107,12 +107,49 @@ Si la carga del Excel es correcta, verás:
 
 ## Endpoints disponibles
 1. Listar todas las tiendas
-
+Código:
 GET /stores
-2. Listar trabajadores de una tienda
-
+Ejemplo de respuesta:
+json:
+[
+  {
+    "id": 1,
+    "nombre": "Mercadona - Valencia Centro"
+  }
+]
+2. Listar secciones de una tienda
+Código:
+GET /stores/{storeId}/sections
+Ejemplo de respuesta:
+json:
+[
+  {
+    "id": 1,
+    "nombre": "Frutas y Verduras",
+    "horasNecesarias": 40
+  },
+  {
+    "id": 2,
+    "nombre": "Pescadería",
+    "horasNecesarias": 30
+  }
+]
+3. Listar trabajadores de una tienda
+Código:
 GET /stores/{storeId}/workers
-(Más endpoints se añadirán en iteraciones posteriores.)
+Ejemplo de respuesta:
+json:
+[
+  {
+    "id": 1,
+    "nombre": "Ana",
+    "apellidos": "García López",
+    "dni": "12345678A",
+    "horasDisponibles": 40
+  }
+]
+
+
 
 ## Carga automática de datos
 La clase DataSeeder se ejecuta al iniciar la aplicación:
@@ -127,7 +164,7 @@ Crea los trabajadores
 
 Inserta todo en la base de datos H2
 
-👤 Autor
+Autor
 Gonzalo Martín
 Prueba técnica Mercadona – Backend
 2026
