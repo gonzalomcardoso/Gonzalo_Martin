@@ -2,8 +2,10 @@ package com.mercadona.test.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import jakarta.validation.constraints.Min;
 
 @Entity
+@Table(name = "worker_section_assignment")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,7 +17,10 @@ public class WorkerSectionAssignment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    @Min(1)
     private Integer horasAsignadas;
+
 
     @ManyToOne
     @JoinColumn(name = "worker_id")
@@ -24,4 +29,8 @@ public class WorkerSectionAssignment {
     @ManyToOne
     @JoinColumn(name = "section_id")
     private Section section;
+
+    @OneToMany(mappedBy = "worker")
+    private List<WorkerSectionAssignment> assignments;
+
 }

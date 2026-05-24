@@ -1,63 +1,59 @@
-package com.mercadona.test.service;
-
-import com.mercadona.test.model.Section;
-import com.mercadona.test.model.Worker;
-import com.mercadona.test.model.WorkerSectionAssignment;
-import com.mercadona.test.repository.SectionRepository;
-import com.mercadona.test.repository.WorkerRepository;
-import com.mercadona.test.repository.WorkerSectionAssignmentRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 @Service
 public class WorkerService {
 
     private final WorkerRepository workerRepository;
     private final SectionRepository sectionRepository;
     private final WorkerSectionAssignmentRepository assignmentRepository;
+    private final StoreRepository storeRepository;
 
     public WorkerService(
             WorkerRepository workerRepository,
             SectionRepository sectionRepository,
-            WorkerSectionAssignmentRepository assignmentRepository
+            WorkerSectionAssignmentRepository assignmentRepository,
+            StoreRepository storeRepository
     ) {
         this.workerRepository = workerRepository;
         this.sectionRepository = sectionRepository;
         this.assignmentRepository = assignmentRepository;
+        this.storeRepository = storeRepository;
     }
-
-    // -----------------------------
-    // CRUD BÁSICO
-    // -----------------------------
 
     public List<Worker> getWorkersByStore(Long storeId) {
-        return workerRepository.findAll(); // Se puede filtrar por tienda si lo necesitas
+        return workerRepository.findByStore_Id(storeId);
     }
 
-    public Worker createWorker(Worker worker) {
+    public Worker createWorker(Long storeId, WorkerDTO dto) {
+
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new RuntimeException("Tienda no encontrada"));
+
+        Worker worker = Worker.builder()
+                .nombre(dto.getNombre())
+                .apellidos(dto.getApellidos())
+                .dni(dto.getDni())
+                .horasDisponibles(dto.getHorasDisponibles())
+                .store(store)
+                .build();
+
         return workerRepository.save(worker);
     }
 
-    public Worker updateWorker(Long id, Worker updated) {
-        Worker worker = workerRepository.findById(id)
+    public Worker updateWorker(Long workerId, WorkerDTO dto) {
+
+        Worker worker = workerRepository.findById(workerId)
                 .orElseThrow(() -> new RuntimeException("Trabajador no encontrado"));
 
-        worker.setNombre(updated.getNombre());
-        worker.setApellidos(updated.getApellidos());
-        worker.setDni(updated.getDni());
-        worker.setHorasDisponibles(updated.getHorasDisponibles());
+        worker.setNombre(dto.getNombre());
+        worker.setApellidos(dto.getApellidos());
+        worker.setDni(dto.getDni());
+        worker.setHorasDisponibles(dto.getHorasDisponibles());
 
         return workerRepository.save(worker);
     }
 
-    public void deleteWorker(Long id) {
-        workerRepository.deleteById(id);
+    public void deleteWorker(Long workerId) {
+        workerRepository.deleteById(workerId);
     }
-
-    // -----------------------------
-    // ASIGNACIÓN DE HORAS
-    // -----------------------------
 
     public WorkerSectionAssignment assignHours(Long workerId, Long sectionId, Integer horas) {
 
@@ -75,37 +71,29 @@ public class WorkerService {
             throw new RuntimeException("El trabajador no tiene horas suficientes");
         }
 
-        // Crear asignación
         WorkerSectionAssignment assignment = WorkerSectionAssignment.builder()
                 .worker(worker)
                 .section(section)
                 .horasAsignadas(horas)
                 .build();
 
-        // Restar horas disponibles
         worker.setHorasDisponibles(worker.getHorasDisponibles() - horas);
         workerRepository.save(worker);
 
         return assignmentRepository.save(assignment);
     }
 
-    // -----------------------------
-    // DESASIGNAR HORAS
-    // -----------------------------
-
     public void unassignHours(Long workerId, Long sectionId) {
 
         WorkerSectionAssignment assignment = assignmentRepository
-                .findAll()
+                .findByWorker_Id(workerId)
                 .stream()
-                .filter(a -> a.getWorker().getId().equals(workerId)
-                        && a.getSection().getId().equals(sectionId))
+                .filter(a -> a.getSection().getId().equals(sectionId))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Asignación no encontrada"));
 
         Worker worker = assignment.getWorker();
 
-        // Devolver horas al trabajador
         worker.setHorasDisponibles(worker.getHorasDisponibles() + assignment.getHorasAsignadas());
         workerRepository.save(worker);
 

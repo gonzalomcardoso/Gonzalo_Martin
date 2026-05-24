@@ -1,9 +1,5 @@
-package com.mercadona.test.model;
-
-import jakarta.persistence.*;
-import lombok.*;
-
 @Entity
+@Table(name = "worker")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,4 +18,11 @@ public class Worker {
     private String dni;
 
     private Integer horasDisponibles;
+
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
+
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkerSectionAssignment> assignments;
 }

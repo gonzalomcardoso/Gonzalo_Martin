@@ -1,8 +1,12 @@
 package com.mercadona.test.controller;
 
-import com.mercadona.test.model.Worker;
-import com.mercadona.test.model.WorkerSectionAssignment;
+import com.mercadona.test.dto.WorkerDTO;
+import com.mercadona.test.dto.AssignmentDTO;
+import com.mercadona.test.mapper.WorkerMapper;
+import com.mercadona.test.mapper.AssignmentMapper;
+
 import com.mercadona.test.service.WorkerService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,30 +26,39 @@ public class WorkerController {
     // LISTAR TRABAJADORES DE UNA TIENDA
     // -----------------------------------
     @GetMapping
-    public ResponseEntity<List<Worker>> getWorkers(@PathVariable Long storeId) {
-        return ResponseEntity.ok(workerService.getWorkersByStore(storeId));
+    public ResponseEntity<List<WorkerDTO>> getWorkers(@PathVariable Long storeId) {
+        return ResponseEntity.ok(
+                workerService.getWorkersByStore(storeId)
+                        .stream()
+                        .map(WorkerMapper::toDTO)
+                        .toList()
+        );
     }
 
     // -----------------------------------
     // CREAR TRABAJADOR
     // -----------------------------------
     @PostMapping
-    public ResponseEntity<Worker> createWorker(
+    public ResponseEntity<WorkerDTO> createWorker(
             @PathVariable Long storeId,
-            @RequestBody Worker worker
+            @RequestBody WorkerDTO workerDTO
     ) {
-        return ResponseEntity.ok(workerService.createWorker(worker));
+        return ResponseEntity.ok(
+                WorkerMapper.toDTO(workerService.createWorker(storeId, workerDTO))
+        );
     }
 
     // -----------------------------------
     // ACTUALIZAR TRABAJADOR
     // -----------------------------------
     @PutMapping("/{workerId}")
-    public ResponseEntity<Worker> updateWorker(
+    public ResponseEntity<WorkerDTO> updateWorker(
             @PathVariable Long workerId,
-            @RequestBody Worker worker
+            @RequestBody WorkerDTO workerDTO
     ) {
-        return ResponseEntity.ok(workerService.updateWorker(workerId, worker));
+        return ResponseEntity.ok(
+                WorkerMapper.toDTO(workerService.updateWorker(workerId, workerDTO))
+        );
     }
 
     // -----------------------------------
@@ -61,12 +74,14 @@ public class WorkerController {
     // ASIGNAR HORAS A UNA SECCIÓN
     // -----------------------------------
     @PostMapping("/{workerId}/assign")
-    public ResponseEntity<WorkerSectionAssignment> assignHours(
+    public ResponseEntity<AssignmentDTO> assignHours(
             @PathVariable Long workerId,
             @RequestParam Long sectionId,
             @RequestParam Integer horas
     ) {
-        return ResponseEntity.ok(workerService.assignHours(workerId, sectionId, horas));
+        return ResponseEntity.ok(
+                AssignmentMapper.toDTO(workerService.assignHours(workerId, sectionId, horas))
+        );
     }
 
     // -----------------------------------

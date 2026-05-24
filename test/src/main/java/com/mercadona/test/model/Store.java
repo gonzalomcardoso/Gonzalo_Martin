@@ -5,6 +5,7 @@ import lombok.*;
 import java.util.List;
 
 @Entity
+@Table(name = "store")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,8 +17,14 @@ public class Store {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
+    private String codigo;
+
     private String nombre;
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Section> sections;
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Worker> workers;
 }
