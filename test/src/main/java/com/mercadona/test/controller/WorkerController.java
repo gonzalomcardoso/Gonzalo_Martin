@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/stores/{storeId}/workers")
+@RequestMapping("/workers")
 public class WorkerController {
 
     private final WorkerService workerService;
@@ -21,20 +21,17 @@ public class WorkerController {
     // -----------------------------------
     // LISTAR TRABAJADORES DE UNA TIENDA
     // -----------------------------------
-    @GetMapping
-    public ResponseEntity<List<Worker>> getWorkers(@PathVariable Long storeId) {
+    @GetMapping("/store/{storeId}")
+    public ResponseEntity<List<Worker>> getWorkersByStore(@PathVariable Long storeId) {
         return ResponseEntity.ok(workerService.getWorkersByStore(storeId));
     }
 
     // -----------------------------------
-    // CREAR TRABAJADOR
+    // CREAR TRABAJADOR (sin tienda)
     // -----------------------------------
     @PostMapping
-    public ResponseEntity<Worker> createWorker(
-        @PathVariable Long storeId,
-        @RequestBody Worker worker
-    ) {
-        return ResponseEntity.ok(workerService.createWorker(storeId, worker));
+    public ResponseEntity<Worker> createWorker(@RequestBody Worker worker) {
+        return ResponseEntity.ok(workerService.createWorker(worker));
     }
 
     // -----------------------------------
@@ -54,30 +51,6 @@ public class WorkerController {
     @DeleteMapping("/{workerId}")
     public ResponseEntity<Void> deleteWorker(@PathVariable Long workerId) {
         workerService.deleteWorker(workerId);
-        return ResponseEntity.noContent().build();
-    }
-
-    // -----------------------------------
-    // ASIGNAR HORAS A UNA SECCIÓN
-    // -----------------------------------
-    @PostMapping("/{workerId}/assign")
-    public ResponseEntity<WorkerSectionAssignment> assignHours(
-            @PathVariable Long workerId,
-            @RequestParam Long sectionId,
-            @RequestParam Integer horas
-    ) {
-        return ResponseEntity.ok(workerService.assignHours(workerId, sectionId, horas));
-    }
-
-    // -----------------------------------
-    // DESASIGNAR HORAS
-    // -----------------------------------
-    @DeleteMapping("/{workerId}/assign/{sectionId}")
-    public ResponseEntity<Void> unassignHours(
-            @PathVariable Long workerId,
-            @PathVariable Long sectionId
-    ) {
-        workerService.unassignHours(workerId, sectionId);
         return ResponseEntity.noContent().build();
     }
 }

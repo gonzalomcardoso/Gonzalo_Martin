@@ -12,46 +12,40 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
 public class WorkerService {
 
     private final WorkerRepository workerRepository;
     private final SectionRepository sectionRepository;
     private final WorkerSectionAssignmentRepository assignmentRepository;
-    private final StoreRepository storeRepository;
 
     public WorkerService(
             WorkerRepository workerRepository,
             SectionRepository sectionRepository,
-            WorkerSectionAssignmentRepository assignmentRepository,
-            StoreRepository storeRepository
+            WorkerSectionAssignmentRepository assignmentRepository
     ) {
         this.workerRepository = workerRepository;
         this.sectionRepository = sectionRepository;
         this.assignmentRepository = assignmentRepository;
-        this.storeRepository = storeRepository;
     }
 
     // -----------------------------
-    // LISTAR TRABAJADORES POR TIENDA
+    // LISTAR TRABAJADORES POR TIENDA (según asignaciones)
     // -----------------------------
     public List<Worker> getWorkersByStore(Long storeId) {
-        return workerRepository.findAll()
+        return assignmentRepository.findAll()
                 .stream()
-                .filter(w -> w.getStore().getId().equals(storeId))
+                .filter(a -> a.getSection().getStore().getId().equals(storeId))
+                .map(WorkerSectionAssignment::getWorker)
+                .distinct()
                 .toList();
     }
 
     // -----------------------------
-    // CREAR TRABAJADOR
+    // CREAR TRABAJADOR (sin tienda)
     // -----------------------------
-    public Worker createWorker(Long storeId, Worker worker) {
-
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new RuntimeException("Tienda no encontrada"));
-
-        worker.setStore(store);
-
+    public Worker createWorker(Worker worker) {
         return workerRepository.save(worker);
     }
 
@@ -78,9 +72,9 @@ public class WorkerService {
     }
 
     // -----------------------------
-    // ASIGNAR HORAS
+    // ASIGNAR HORAS (POST /assignments)
     // -----------------------------
-    public WorkerSectionAssignment assignHours(Long workerId, Long sectionId, Integer horas) {
+    public WorkerSectionAssignment assignHours(Long workerId, Long sectionId, Integer hours) {
 
         Worker worker = workerRepository.findById(workerId)
                 .orElseThrow(() -> new RuntimeException("Trabajador no encontrado"));
@@ -88,21 +82,21 @@ public class WorkerService {
         Section section = sectionRepository.findById(sectionId)
                 .orElseThrow(() -> new RuntimeException("Sección no encontrada"));
 
-        if (horas <= 0) {
+        if (hours <= 0) {
             throw new RuntimeException("Las horas deben ser mayores que cero");
         }
 
-        if (worker.getHorasDisponibles() < horas) {
+        if (worker.getHorasDisponibles() < hours) {
             throw new RuntimeException("El trabajador no tiene horas suficientes");
         }
 
         WorkerSectionAssignment assignment = WorkerSectionAssignment.builder()
                 .worker(worker)
                 .section(section)
-                .horasAsignadas(horas)
+                .horasAsignadas(hours)
                 .build();
 
-        worker.setHorasDisponibles(worker.getHorasDisponibles() - horas);
+        worker.setHorasDisponibles(worker.getHorasDisponibles() - hours);
         workerRepository.save(worker);
 
         return assignmentRepository.save(assignment);
