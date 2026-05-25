@@ -1,0 +1,234 @@
+{
+  "info": {
+    "_postman_id": "113658b5-c039-4453-9596-d97928157be7",
+    "name": "Mercadona API",
+    "description": "Colección final para la prueba técnica Mercadona.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55179979",
+    "_collection_link": "https://go.postman.co/collection/55179979-113658b5-c039-4453-9596-d97928157be7?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Listar tiendas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/stores",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "stores"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Listar trabajadores asignados a una tienda",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/workers/store/{{storeId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "workers",
+            "store",
+            "{{storeId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crear trabajador",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Nuevo\",\n  \"apellidos\": \"Trabajador\",\n  \"dni\": \"99999999X\",\n  \"horasDisponibles\": 40\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8081/workers",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "workers"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Actualizar trabajador",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Ana\",\n  \"apellidos\": \"García López\",\n  \"dni\": \"12345678A\",\n  \"horasDisponibles\": 35\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8081/workers/{{workerId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "workers",
+            "{{workerId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Eliminar trabajador",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/workers/10",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "workers",
+            "10"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Asignar horas a sección",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/assignments?workerId={{workerId}}&sectionId={{sectionId}}&hours={{hours}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "assignments"
+          ],
+          "query": [
+            {
+              "key": "workerId",
+              "value": "{{workerId}}"
+            },
+            {
+              "key": "sectionId",
+              "value": "{{sectionId}}"
+            },
+            {
+              "key": "hours",
+              "value": "{{hours}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Eliminar asignación",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/assignments?workerId=8&sectionId={{sectionId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "assignments"
+          ],
+          "query": [
+            {
+              "key": "workerId",
+              "value": "8"
+            },
+            {
+              "key": "sectionId",
+              "value": "{{sectionId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reporte completo de tienda",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/stores/{{storeId}}/report",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "stores",
+            "{{storeId}}",
+            "report"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reporte de horas no cubiertas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/stores/{{storeId}}/report/uncovered",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "stores",
+            "{{storeId}}",
+            "report",
+            "uncovered"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

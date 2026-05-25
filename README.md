@@ -107,52 +107,64 @@ Si la carga del Excel es correcta, verás:
 
 ## Endpoints disponibles
 
-1. Listar todas las tiendas
-Peticion
+ 1. Tiendas
+Listar todas las tiendas
+
+Código:
 GET /stores
+Reporte completo de una tienda
+Código:
+GET /stores/{storeId}/report
+Reporte de horas no cubiertas
+Código:
+GET /stores/{storeId}/report/uncovered
 
-2. Listar secciones de una tienda
-Peticion
-GET /stores/{storeId}/sections
+2. Trabajadores
 
-3. Listar trabajadores de una tienda
-Peticion
-GET /stores/{storeId}/workers
+Listar trabajadores asignados a una tienda
+(según asignaciones, no por pertenencia directa)
+Código:
+GET /workers/store/{storeId}
+Crear trabajador
+Código:
+POST /workers
+Actualizar trabajador
+Código:
+PUT /workers/{workerId}
+Eliminar trabajador
+Código:
+DELETE /workers/{workerId}
 
-4. Crear trabajador
-Peticion
-POST /stores/{storeId}/workers
+3. Asignaciones (Worker ↔ Section)
 
-5. Actualizar trabajador
-Peticion
-PUT /stores/{storeId}/workers/{workerId}
+Asignar horas a una sección
+Código:
+POST /assignments?workerId=X&sectionId=Y&hours=Z
+Ejemplo:
+Código:
+POST /assignments?workerId=1&sectionId=2&hours=5
+Eliminar asignación
+Código:
+DELETE /assignments?workerId=X&sectionId=Y
 
-6. Eliminar trabajador
-Peticion
-DELETE /stores/{storeId}/workers/{workerId}
-
-7. Asignar horas a una sección
-Peticion
-POST /stores/{storeId}/workers/{workerId}/assign?sectionId=X&horas=Y
-
-8. Desasignar horas
-Peticion
-DELETE /stores/{storeId}/workers/{workerId}/assign/{sectionId}
-
+## Colección Postman incluida
+El repositorio incluye:
+/postman/
+  ├── MercadonaAPI.postman_collection.json
+  └── MercadonaEnv.postman_environment.json
 
 
 ## Carga automática de datos
+Carga automática de datos
 La clase DataSeeder se ejecuta al iniciar la aplicación:
 
-Lee data.xlsx con Apache POI
+-Lee data.xlsx con Apache POI
+-Crea la tienda
+-Crea las secciones asociadas
+-Crea los trabajadores
+-Inserta todo en la base de datos H2
 
-Crea la tienda
 
-Crea las secciones asociadas
-
-Crea los trabajadores
-
-Inserta todo en la base de datos H2
 
 Autor
 Gonzalo Martín
