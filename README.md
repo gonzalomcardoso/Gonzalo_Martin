@@ -36,7 +36,7 @@ src/
 
 ---
 
-## 📄 Archivo Excel (`data.xlsx`)
+## Archivo Excel (`data.xlsx`)
 
 El archivo debe ubicarse en:
 
@@ -106,48 +106,38 @@ Si la carga del Excel es correcta, verás:
 
 
 ## Endpoints disponibles
+
 1. Listar todas las tiendas
-Código:
+Peticion
 GET /stores
-Ejemplo de respuesta:
-json:
-[
-  {
-    "id": 1,
-    "nombre": "Mercadona - Valencia Centro"
-  }
-]
+
 2. Listar secciones de una tienda
-Código:
+Peticion
 GET /stores/{storeId}/sections
-Ejemplo de respuesta:
-json:
-[
-  {
-    "id": 1,
-    "nombre": "Frutas y Verduras",
-    "horasNecesarias": 40
-  },
-  {
-    "id": 2,
-    "nombre": "Pescadería",
-    "horasNecesarias": 30
-  }
-]
+
 3. Listar trabajadores de una tienda
-Código:
+Peticion
 GET /stores/{storeId}/workers
-Ejemplo de respuesta:
-json:
-[
-  {
-    "id": 1,
-    "nombre": "Ana",
-    "apellidos": "García López",
-    "dni": "12345678A",
-    "horasDisponibles": 40
-  }
-]
+
+4. Crear trabajador
+Peticion
+POST /stores/{storeId}/workers
+
+5. Actualizar trabajador
+Peticion
+PUT /stores/{storeId}/workers/{workerId}
+
+6. Eliminar trabajador
+Peticion
+DELETE /stores/{storeId}/workers/{workerId}
+
+7. Asignar horas a una sección
+Peticion
+POST /stores/{storeId}/workers/{workerId}/assign?sectionId=X&horas=Y
+
+8. Desasignar horas
+Peticion
+DELETE /stores/{storeId}/workers/{workerId}/assign/{sectionId}
 
 
 
