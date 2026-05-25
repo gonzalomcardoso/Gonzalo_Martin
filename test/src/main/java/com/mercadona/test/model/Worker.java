@@ -22,4 +22,9 @@ public class Worker {
     private String dni;
 
     private Integer horasDisponibles;
+
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
+
 }

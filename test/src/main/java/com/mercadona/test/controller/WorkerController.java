@@ -31,10 +31,10 @@ public class WorkerController {
     // -----------------------------------
     @PostMapping
     public ResponseEntity<Worker> createWorker(
-            @PathVariable Long storeId,
-            @RequestBody Worker worker
+        @PathVariable Long storeId,
+        @RequestBody Worker worker
     ) {
-        return ResponseEntity.ok(workerService.createWorker(worker));
+        return ResponseEntity.ok(workerService.createWorker(storeId, worker));
     }
 
     // -----------------------------------
